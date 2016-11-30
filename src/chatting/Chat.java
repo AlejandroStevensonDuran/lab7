@@ -16,6 +16,10 @@ public class Chat extends Observable{
 	ClientObserver writer;
 	String chatName;
 	
+	@Override
+	public String toString(){
+		return chatName;
+	}
 	
 	public Chat(BufferedReader reader, ClientObserver writer, String name) {
 		//Thread t = new Thread(new ClientHandler(reader, writer));
@@ -28,10 +32,19 @@ public class Chat extends Observable{
 	
 	public synchronized void addMember(String newMember, Socket clientSocket) throws IOException{
 		members.add(newMember);
-		this.addObserver(writer);
-		setChanged();
-		notifyObservers("Welcome to chat "+ chatName + "!");		
+		this.addObserver(writer);		
 		System.out.println("added: " + newMember);
+	}
+	
+	public synchronized void removeMember(String newMember, Socket clientSocket) throws IOException{
+		members.add(newMember);
+		this.addObserver(writer);		
+		System.out.println("added: " + newMember);
+	}
+	
+	public synchronized void welcomeMessage(){
+		setChanged();
+		notifyObservers("Welcome to chat "+ chatName + "!");
 	}
 	
 	public synchronized void sendMessage(){
@@ -47,22 +60,26 @@ public class Chat extends Observable{
 		}
 	}
 	
-	class ClientHandler implements Runnable {
-
-		public void run() {
-			String message;
-			try {
-				while ((message = reader.readLine()) != null) {
-					System.out.println("chat server read "+message);
-					writer.println("got your message budy");
-					writer.flush();
-					//setChanged();
-					//notifyObservers(message);
-				}
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
+	public void sendUserNames(){	//sends user names of people in chat to all participants. invoked when user added/removed
+		
 	}
+	
+//	class ClientHandler implements Runnable {
+//
+//		public void run() {
+//			String message;
+//			try {
+//				while ((message = reader.readLine()) != null) {
+//					System.out.println("chat server read "+message);
+//					writer.println("got your message budy");
+//					writer.flush();
+//					//setChanged();
+//					//notifyObservers(message);
+//				}
+//			} catch (IOException e) {
+//				e.printStackTrace();
+//			}
+//		}
+//	}
 	
 }

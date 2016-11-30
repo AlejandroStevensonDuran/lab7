@@ -9,7 +9,8 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.geometry.Insets; 
+import javafx.geometry.Insets;
+import javafx.geometry.Orientation;
 import javafx.geometry.Pos; 
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -46,9 +47,11 @@ public class Client extends Application {
 	TextField newChatName = new TextField();
 	TextField joinChatName = new TextField();
 	TextField friendName = new TextField();
+	TextField statusBar = new TextField();
 	ArrayList<Chat> chatList = new ArrayList<Chat>();
-	boolean hasCreated = false;
 	String name="user1";
+	boolean connected=false;
+	int Width = 200;
 	
 	
 	public static void main(String[] args) {
@@ -62,40 +65,50 @@ public class Client extends Application {
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
+		if (connected == false){	// set connection - one time 
+			setUpNetworking();
+			connected = true;
+		}
+		//set preferences for textboxes
 		outgoing.setPromptText("Enter chat stuff");
 		incoming.setPromptText("chat history");
-		incoming.setPrefSize(200, 200);
+		incoming.setPrefSize(Width, 200);
 		newChatName.setPromptText("Enter new chat name");
 		joinChatName.setPromptText("Enter chat name to join ");
 		friendName.setPromptText("Enter friend's name ");
-		setUpNetworking();
+		statusBar.setPrefSize(Width,20);
+		
 		FlowPane paneForTextField = new FlowPane();
-		ListView<String> listView = new ListView<String>();
-		listView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-        listView.setOnMouseClicked(new EventHandler<Event>() {
-            @Override
-            public void handle(Event event) {
-                ObservableList<String> selectedItems =  listView.getSelectionModel().getSelectedItems();
-            }
-        });
+		paneForTextField.setOrientation(Orientation.VERTICAL);
+		
+//		ListView<String> listView = new ListView<String>();
+//		listView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+//        listView.setOnMouseClicked(new EventHandler<Event>() {
+//            @Override
+//            public void handle(Event event) {
+//                ObservableList<String> selectedItems =  listView.getSelectionModel().getSelectedItems();
+//            }
+//        });
 		
 		Button newChatBtn = new Button("Create New chat");
 		newChatBtn.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-            	if (hasCreated==false){
-            		writer.println("createChat");
-            		writer.flush();
-            		hasCreated = true;
-            	}
+            	if (!newChatName.getText().equals("") && !friendName.getText().equals("")){
+            	writer.println("createChat");
+            	writer.flush();
             	writer.println(newChatName.getText());
             	writer.flush();
             	writer.println(name);
             	writer.flush();
             	writer.println(friendName.getText());
             	writer.flush();
-				outgoing.setText("");
+            	outgoing.setText("");
 				outgoing.requestFocus();
+            	}
+            	else {
+            		outgoing.setText("please fill the required fields");
+            	}
             }
         });
 		
@@ -124,11 +137,8 @@ public class Client extends Application {
 		joinChatBtn.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-            	if (hasCreated==false){
-            		writer.println("joinChat");
-            		writer.flush();
-            		hasCreated = true;
-            	}
+            	writer.println("joinChat");
+            	writer.flush();
             	writer.println(joinChatName.getText());
             	writer.flush();
 				outgoing.setText("");
@@ -152,7 +162,7 @@ public class Client extends Application {
 		paneForTextField.getChildren().add(sendMsgBox);
 		paneForTextField.getChildren().add(newChatBox);
 		paneForTextField.getChildren().add(joinChatBox);
-		paneForTextField.getChildren().add(listView);
+		paneForTextField.getChildren().add(statusBar);
 
         primaryStage.setTitle("Hola!");
 	    Scene scene = new Scene(paneForTextField, 450, 450);
@@ -161,7 +171,7 @@ public class Client extends Application {
 	}
 	
 	public void run()throws Exception{
-
+		setUpNetworking();
 	}
 
 	private void setUpNetworking() throws Exception{
@@ -182,7 +192,7 @@ public class Client extends Application {
 			String message;
 			try {
 				while ((message = reader.readLine()) != null) {
-					incoming.setText("");
+//					incoming.setText("");
 					incoming.appendText(message + "\n");	
 				}
 			} catch (IOException ex) {

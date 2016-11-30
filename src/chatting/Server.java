@@ -17,7 +17,7 @@ public class Server{
 	//List<String> clientList = new ArrayList<Socket>();	
 
 	List<Socket> clientList = new ArrayList<Socket>();	
-	ArrayList<Chat> chatList = new ArrayList<Chat>();
+	HashMap<String, Chat> chatList = new HashMap<String, Chat>();
 	ArrayList<String> clientListNames = new ArrayList<String>();
 	HashMap clientListMap = new HashMap();
 	
@@ -47,8 +47,9 @@ public class Server{
 	class ClientHandler implements Runnable {
 		private BufferedReader reader;
 		private ClientObserver writer;
-		Chat myChat;
+		UserServerSide user;		
 		public ClientHandler(Socket clientSocket, ClientObserver writer) {
+			user = new UserServerSide("name", clientSocket);
 			Socket sock = clientSocket;
 			this.writer = writer; 
 			try {
@@ -64,32 +65,35 @@ public class Server{
 				while (reader!=null && (message = reader.readLine()) != null) {
 					if (message.equals("createChat")){
 						if (!(message = reader.readLine()).equals("")){	// update message to next line
-							myChat = new Chat(reader, writer, message);
-							chatList.add(myChat);
-							System.out.println("created a chat");
+							Chat newChat = new Chat(reader, writer, message);
+							if(chatList.containsKey(message)){
+								System.out.println("chat already exists");
+							}
+							else{	// create new chat and add to user
+								chatList.put(newChat.toString(),newChat);
+								user.chat = newChat;
+								System.out.println("created a chat");
+								// now add creator to chat
+								message = reader.readLine();	// update message to next line
+								String myName = message;
+								user.chat.addMember(myName, new Socket());								
+								// add friend to chat
+								message = reader.readLine();	// update message to next line
+								String friendName = message;
+								//TODO find if friends exists, if he does, then retrieve his socket 
+								user.chat.addMember(friendName, new Socket());		
+								user.chat.welcomeMessage();
+							}							
+							
 						}
 						else{
 							System.out.println("name is empty");
 						}
-						// now add creator to chat
-						if (!(message = reader.readLine()).equals("")){	// update message to next line
-							String myName = message;
-							myChat.addMember(myName, new Socket());
-						}
-						else{
-							System.out.println("creator name is empty");
-						}
-						// add friend to chat
-						if (!(message = reader.readLine()).equals("")){	// update message to next line
-							String friendName = message;
-							myChat.addMember(friendName, new Socket());
-						}
-						else{
-							System.out.println("friends name is empty");
-						}
+						
 					}
 					else if (message.equals("sendMsg")){
-						myChat.sendMessage();
+						if (user.chat != null)
+							user.chat.sendMessage();
 					}
 					
 
