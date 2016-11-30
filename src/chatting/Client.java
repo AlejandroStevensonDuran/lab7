@@ -45,9 +45,12 @@ public class Client extends Application {
 	TextField outgoing = new TextField();
 	TextField newChatName = new TextField();
 	TextField joinChatName = new TextField();
+	TextField friendName = new TextField();
 	ArrayList<Chat> chatList = new ArrayList<Chat>();
 	boolean hasCreated = false;
-
+	String name="user1";
+	
+	
 	public static void main(String[] args) {
         launch(args);
 		try {
@@ -57,14 +60,14 @@ public class Client extends Application {
 		}
 	}
 
-	
-	
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		outgoing.setPromptText("Enter chat stuff");
 		incoming.setPromptText("chat history");
+		incoming.setPrefSize(200, 200);
 		newChatName.setPromptText("Enter new chat name");
 		joinChatName.setPromptText("Enter chat name to join ");
+		friendName.setPromptText("Enter friend's name ");
 		setUpNetworking();
 		FlowPane paneForTextField = new FlowPane();
 		ListView<String> listView = new ListView<String>();
@@ -87,27 +90,29 @@ public class Client extends Application {
             	}
             	writer.println(newChatName.getText());
             	writer.flush();
+            	writer.println(name);
+            	writer.flush();
+            	writer.println(friendName.getText());
+            	writer.flush();
 				outgoing.setText("");
 				outgoing.requestFocus();
             }
         });
 		
 		HBox newChatBox= new HBox();
-		newChatBox.getChildren().addAll(newChatName,newChatBtn);
+		newChatBox.getChildren().addAll(newChatName,friendName,newChatBtn);
 		
 		//Send Message Button
 		Button sendMsgBtn = new Button("Send Message");
 		sendMsgBtn.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-            	if (hasCreated==false){
-            		writer.println("sendMsg");
-            		writer.flush();
-            		hasCreated = true;
-            	}
+            	writer.println("sendMsg");
+            	writer.flush();
             	writer.println(outgoing.getText());
             	writer.flush();
-				outgoing.setText("");
+            	writer.println("endMsg");
+            	outgoing.setText("");
 				outgoing.requestFocus();
             }
         });
@@ -150,7 +155,7 @@ public class Client extends Application {
 		paneForTextField.getChildren().add(listView);
 
         primaryStage.setTitle("Hola!");
-	    Scene scene = new Scene(paneForTextField, 300, 300);
+	    Scene scene = new Scene(paneForTextField, 450, 450);
 	    primaryStage.setScene(scene);
 	    primaryStage.show();    
 	}
