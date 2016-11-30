@@ -3,12 +3,15 @@ package chatting;
 import java.io.*; 
 import java.net.*;
 
-import day23network.observer.ChatClient;
-//import day23network.observer.ChatClient.IncomingReader;
-import javafx.application.Application; 
+import javax.swing.JTextField;
+
+import javafx.application.Application;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets; 
 import javafx.geometry.Pos; 
-import javafx.scene.Scene; 
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label; 
 import javafx.scene.control.ScrollPane; 
 import javafx.scene.control.TextArea;
@@ -22,9 +25,9 @@ import javafx.stage.Stage;
 public class Client extends Application {
 	BufferedReader reader;
 	PrintWriter writer;
-	TextField incoming;
-	
-	
+	TextField incoming = new TextField();
+	TextField outgoing = new TextField();
+
 	
 
 	public static void main(String[] args) {
@@ -40,13 +43,19 @@ public class Client extends Application {
 	
 	@Override
 	public void start(Stage primaryStage) throws Exception {
+		setUpNetworking();
 		FlowPane paneForTextField = new FlowPane(); 
 		paneForTextField.setPadding(new Insets(5, 5, 5, 5)); 
 		paneForTextField.setStyle("-fx-border-color: green"); 
-		//paneForTextField.a
-		incoming = new TextField();
-		incoming.setText("yop");
-		paneForTextField.getChildren().add(incoming);
+		outgoing.setOnAction(e -> {
+				writer.println(outgoing.getText());
+				writer.flush();
+				outgoing.setText("");
+				outgoing.requestFocus(); 
+			}); 
+		
+		paneForTextField.getChildren().add(outgoing);
+
         primaryStage.setTitle("Hola!");
 	    Scene scene = new Scene(paneForTextField, 300, 300);
 	    primaryStage.setScene(scene);
@@ -54,9 +63,8 @@ public class Client extends Application {
 	}
 	
 	public void run()throws Exception{
-	// start will already be called automatically
        // launch(args);
-	setUpNetworking();
+	//setUpNetworking();
 	}
 
 	private void setUpNetworking() throws Exception{
@@ -71,6 +79,8 @@ public class Client extends Application {
 		readerThread.start();
 		
 	}
+	
+
 	
 	class IncomingReader implements Runnable {
 		public void run() {
