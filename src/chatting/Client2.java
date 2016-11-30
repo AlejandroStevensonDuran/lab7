@@ -38,7 +38,7 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 
-public class Client extends Application {
+public class Client2 extends Application {
 	BufferedReader reader;
 	PrintWriter writer;
 	TextField incoming = new TextField();
@@ -49,7 +49,7 @@ public class Client extends Application {
 	public static void main(String[] args) {
         launch(args);
 		try {
-			new Client().run();
+			new Client2().run();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

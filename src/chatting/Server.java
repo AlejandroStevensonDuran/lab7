@@ -12,8 +12,12 @@ import java.util.Observable;
 import javafx.application.Application;
 
 public class Server{
-	
+	//List<String> clientList = new ArrayList<Socket>();	
+
 	List<Socket> clientList = new ArrayList<Socket>();	
+	ArrayList<Chat> chatList = new ArrayList<Chat>();
+	ArrayList<String> clientListNames = new ArrayList<String>();
+
 	
 	public static void main(String[] args) {
 		try {
@@ -54,10 +58,18 @@ public class Server{
 		public void run() {
 			String message;
 			try {
-				while ((message = reader.readLine()) != null) {
-					System.out.println("server read "+message);
-					writer.println("got your message budy");
-					writer.flush();
+				while (reader!=null && (message = reader.readLine()) != null) {
+					if (message.equals("createChat")){
+						Chat mychat = new Chat(reader, writer);
+						System.out.println("created a chat");
+						reader = null;
+						writer = null;
+					}
+					
+
+//					System.out.println("server read "+message);
+//					writer.println("got your message budy");
+//					writer.flush();
 					//setChanged();
 					//notifyObservers(message);
 				}
