@@ -14,11 +14,14 @@ public class Chat extends Observable{
 	ArrayList<String> members = new ArrayList<String>();
 	ArrayList<String> history = new ArrayList<String>();	//chat history
 	BufferedReader reader;
+	String chatName;
 	
-	public Chat(BufferedReader reader, ClientObserver writer) {
+	public Chat(BufferedReader reader, ClientObserver writer, String name) {
 		Thread t = new Thread(new ClientHandler(reader, writer));
 		t.start();
 		this.reader = reader;
+		chatName = name;
+		System.out.println("Created new chat instance named:" + chatName);
 	}
 	
 	public void addMember(String newMember, Socket clientSocket) throws IOException{
@@ -39,7 +42,7 @@ public class Chat extends Observable{
 			String message;
 			try {
 				while ((message = reader.readLine()) != null) {
-					System.out.println("server read "+message);
+					System.out.println("chat server read "+message);
 					writer.println("got your message budy");
 					writer.flush();
 					//setChanged();

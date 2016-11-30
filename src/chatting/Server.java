@@ -60,8 +60,13 @@ public class Server{
 			try {
 				while (reader!=null && (message = reader.readLine()) != null) {
 					if (message.equals("createChat")){
-						Chat mychat = new Chat(reader, writer);
-						System.out.println("created a chat");
+						if (!(message = reader.readLine()).equals("")){	// update message to next line
+							Chat mychat = new Chat(reader, writer, message);
+							System.out.println("created a chat");
+						}
+						else{
+							System.out.println("name is empty");
+						}
 						reader = null;
 						writer = null;
 					}

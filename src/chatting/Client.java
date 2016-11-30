@@ -43,6 +43,8 @@ public class Client extends Application {
 	PrintWriter writer;
 	TextField incoming = new TextField();
 	TextField outgoing = new TextField();
+	TextField newChatName = new TextField();
+	TextField joinChatName = new TextField();
 	ArrayList<Chat> chatList = new ArrayList<Chat>();
 	boolean hasCreated = false;
 
@@ -59,6 +61,10 @@ public class Client extends Application {
 	
 	@Override
 	public void start(Stage primaryStage) throws Exception {
+		outgoing.setPromptText("Enter chat stuff");
+		incoming.setPromptText("chat history");
+		newChatName.setPromptText("Enter new chat name");
+		joinChatName.setPromptText("Enter chat name to join ");
 		setUpNetworking();
 		FlowPane paneForTextField = new FlowPane();
 		ListView<String> listView = new ListView<String>();
@@ -70,21 +76,63 @@ public class Client extends Application {
             }
         });
 		
-		Button newGroupBtn = new Button("Create New chat");
-		newGroupBtn.setOnAction(new EventHandler<ActionEvent>() {
+		Button newChatBtn = new Button("Create New chat");
+		newChatBtn.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-            	//if (hasCreated==false){
+            	if (hasCreated==false){
             		writer.println("createChat");
             		writer.flush();
             		hasCreated = true;
-            	//}
+            	}
+            	writer.println(newChatName.getText());
+            	writer.flush();
+				outgoing.setText("");
+				outgoing.requestFocus();
+            }
+        });
+		
+		HBox newChatBox= new HBox();
+		newChatBox.getChildren().addAll(newChatName,newChatBtn);
+		
+		//Send Message Button
+		Button sendMsgBtn = new Button("Send Message");
+		sendMsgBtn.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+            	if (hasCreated==false){
+            		writer.println("sendMsg");
+            		writer.flush();
+            		hasCreated = true;
+            	}
             	writer.println(outgoing.getText());
             	writer.flush();
 				outgoing.setText("");
 				outgoing.requestFocus();
             }
         });
+		HBox sendMsgBox = new HBox();
+		sendMsgBox.getChildren().addAll(outgoing,sendMsgBtn);
+		
+		//Join Chat Button and text
+		Button joinChatBtn = new Button("Join Chat");
+		joinChatBtn.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+            	if (hasCreated==false){
+            		writer.println("joinChat");
+            		writer.flush();
+            		hasCreated = true;
+            	}
+            	writer.println(joinChatName.getText());
+            	writer.flush();
+				outgoing.setText("");
+				outgoing.requestFocus();
+            }
+        });
+		HBox joinChatBox= new HBox();
+		joinChatBox.getChildren().addAll(joinChatName,joinChatBtn);
+
 		
 //		paneForTextField.setPadding(new Insets(5, 5, 5, 5)); 
 //		paneForTextField.setStyle("-fx-border-color: green"); 
@@ -96,8 +144,9 @@ public class Client extends Application {
 //			}); 
 		
 		paneForTextField.getChildren().add(incoming);
-		paneForTextField.getChildren().add(outgoing);
-		paneForTextField.getChildren().add(newGroupBtn);
+		paneForTextField.getChildren().add(sendMsgBox);
+		paneForTextField.getChildren().add(newChatBox);
+		paneForTextField.getChildren().add(joinChatBox);
 		paneForTextField.getChildren().add(listView);
 
         primaryStage.setTitle("Hola!");
