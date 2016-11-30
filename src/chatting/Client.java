@@ -2,6 +2,7 @@ package chatting;
 
 import java.io.*; 
 import java.net.*;
+import java.util.ArrayList;
 
 import javax.swing.JTextField;
 
@@ -27,6 +28,7 @@ public class Client extends Application {
 	PrintWriter writer;
 	TextField incoming = new TextField();
 	TextField outgoing = new TextField();
+	ArrayList<Chat> chatList = new ArrayList<Chat>();
 
 	
 
@@ -55,6 +57,7 @@ public class Client extends Application {
 			}); 
 		
 		paneForTextField.getChildren().add(outgoing);
+		paneForTextField.getChildren().add(incoming);
 
         primaryStage.setTitle("Hola!");
 	    Scene scene = new Scene(paneForTextField, 300, 300);
@@ -86,8 +89,9 @@ public class Client extends Application {
 		public void run() {
 			String message;
 			try {
-				while ((message = reader.readLine()) != null) {				
-						incoming.appendText(message + "\n");
+				while ((message = reader.readLine()) != null) {
+					incoming.setText("");
+					incoming.appendText(message + "\n");	
 				}
 			} catch (IOException ex) {
 				ex.printStackTrace();

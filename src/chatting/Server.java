@@ -1,7 +1,6 @@
 package chatting;
 
 import java.io.BufferedReader;
-import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.ServerSocket;
@@ -12,10 +11,7 @@ import java.util.Observable;
 
 import javafx.application.Application;
 
-
-
-
-public class Server extends Observable{
+public class Server{
 	
 	List<Socket> clientList = new ArrayList<Socket>();	
 	
@@ -33,9 +29,9 @@ public class Server extends Observable{
 		while (true) {
 			Socket clientSocket = serverSock.accept();
 			ClientObserver writer = new ClientObserver(clientSocket.getOutputStream());
-			Thread t = new Thread(new ClientHandler(clientSocket));
+			Thread t = new Thread(new ClientHandler(clientSocket, writer));
 			t.start();
-			this.addObserver(writer);
+			//this.addObserver(writer);
 			this.clientList.add(clientSocket);
 			System.out.println("got a connection");
 		}
@@ -44,9 +40,10 @@ public class Server extends Observable{
 	
 	class ClientHandler implements Runnable {
 		private BufferedReader reader;
-
-		public ClientHandler(Socket clientSocket) {
+		private ClientObserver writer;
+		public ClientHandler(Socket clientSocket, ClientObserver writer) {
 			Socket sock = clientSocket;
+			this.writer = writer; 
 			try {
 				reader = new BufferedReader(new InputStreamReader(sock.getInputStream()));
 			} catch (IOException e) {
@@ -59,13 +56,14 @@ public class Server extends Observable{
 			try {
 				while ((message = reader.readLine()) != null) {
 					System.out.println("server read "+message);
-					setChanged();
-					notifyObservers(message);
+					writer.println("got your message budy");
+					writer.flush();
+					//setChanged();
+					//notifyObservers(message);
 				}
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
 	}
-
 }
