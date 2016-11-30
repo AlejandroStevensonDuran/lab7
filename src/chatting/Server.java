@@ -49,7 +49,7 @@ public class Server{
 		private ClientObserver writer;
 		UserServerSide user;		
 		public ClientHandler(Socket clientSocket, ClientObserver writer) {
-			user = new UserServerSide("name", clientSocket);
+			user = new UserServerSide("user1", clientSocket);
 			Socket sock = clientSocket;
 			this.writer = writer; 
 			try {
@@ -75,8 +75,7 @@ public class Server{
 								System.out.println("created a chat");
 								// now add creator to chat
 								message = reader.readLine();	// update message to next line
-								String myName = message;
-								user.chat.addMember(myName, new Socket());								
+								user.chat.addMember(message, new Socket());								
 								// add friend to chat
 								message = reader.readLine();	// update message to next line
 								String friendName = message;
@@ -93,7 +92,12 @@ public class Server{
 					}
 					else if (message.equals("sendMsg")){
 						if (user.chat != null)
-							user.chat.sendMessage();
+							user.chat.sendMessage(user);
+					}
+					else if (message.equals("joinChat")){
+						message = reader.readLine();	// update message to next line
+						//TODO 
+						
 					}
 					
 

@@ -47,13 +47,13 @@ public class Chat extends Observable{
 		notifyObservers("Welcome to chat "+ chatName + "!");
 	}
 	
-	public synchronized void sendMessage(){
+	public synchronized void sendMessage(UserServerSide user){
 		String message;
 		try {
 			while ((message = reader.readLine()) != null && !message.equals("endMsg")) {
-				System.out.println("recieved Message: "+message);
+				System.out.println("recieved Message: "+message + "from" + user.toString());
 				setChanged();
-				notifyObservers(message);
+				notifyObservers(user.toString() + ": " + message);
 			}
 		} catch (IOException e) {
 			e.printStackTrace();

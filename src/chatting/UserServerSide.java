@@ -20,4 +20,9 @@ public class UserServerSide {
 	public void setChat(Chat chat){
 		this.chat=chat;
 	}
+	
+	@Override
+	public String toString(){
+		return name;
+	}
 }

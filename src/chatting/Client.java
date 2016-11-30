@@ -42,7 +42,7 @@ import javafx.stage.Stage;
 public class Client extends Application {
 	BufferedReader reader;
 	PrintWriter writer;
-	TextField incoming = new TextField();
+	TextArea incoming = new TextArea();
 	TextField outgoing = new TextField();
 	TextField newChatName = new TextField();
 	TextField joinChatName = new TextField();
