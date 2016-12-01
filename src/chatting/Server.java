@@ -1,4 +1,5 @@
-package assignment7;
+// Slip day used
+package chatting;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -49,7 +50,7 @@ public class Server{
 		private ClientObserver writer;
 		UserServerSide user;		
 		public ClientHandler(Socket clientSocket, ClientObserver writer) {
-			user = new UserServerSide("user1", clientSocket);
+			user = new UserServerSide("user1", clientSocket, writer);
 			Socket sock = clientSocket;
 			this.writer = writer; 
 			try {
@@ -116,7 +117,7 @@ public class Server{
 							user.chat = null;
 						}
 					}
-					
+
 					else if (message.equals("changePass")){
 						String newPass = reader.readLine();	// update message to next line
 						System.out.println("new password!!" + newPass);

@@ -1,4 +1,5 @@
-package assignment7;
+// Slip day used
+package chatting;
 
 import java.io.*; 
 import java.net.*;
@@ -103,7 +104,7 @@ public class Client extends Application {
 
 		HBox hb = new HBox();
 		hb.setPadding(new Insets(20,20,20,30));
-		
+
 		FlowPane extraPane = new FlowPane();  // used for extra scene
 
 		GridPane gridPane = new GridPane();
@@ -263,6 +264,7 @@ public class Client extends Application {
 			}
 		});		
 		
+
 		//Join Chat Button and text
 		Button joinChatBtn = new Button("Join Chat");
 		joinChatBtn.setOnAction(new EventHandler<ActionEvent>() {
@@ -294,15 +296,31 @@ public class Client extends Application {
 
 		
 		HBox lowerBox = new HBox();
+		//clearHisBtn.setPadding(new Insets(0,15,0,0));
 		lowerBox.getChildren().addAll(clearHisBtn,leaveChatBtn);
 		
 		paneForTextField.getChildren().add(incoming);
+		
+		sendMsgBox.setPadding(new Insets(30,7,7,0));
 		paneForTextField.getChildren().add(sendMsgBox);
+		
+		newChatBox.setPadding(new Insets(7,7,7,0));
 		paneForTextField.getChildren().add(newChatBox);
+		
+		joinChatBox.setPadding(new Insets(7,7,7,0));
 		paneForTextField.getChildren().add(joinChatBox);
+		
+		statusBar.setPadding(new Insets(7,7,7,0));
 		paneForTextField.getChildren().add(statusBar);
+		
+		lowerBox.setPadding(new Insets(40,7,7,0));
 		paneForTextField.getChildren().add(lowerBox);
+		
+		extra.setPadding(new Insets(7,7,7,0));
 		paneForTextField.getChildren().add(extra);
+		
+		
+		
 		Scene menuScene = new Scene(paneForTextField, 600, 600);
 
 		btnLogin.setOnAction(new EventHandler() {
@@ -389,9 +407,7 @@ public class Client extends Application {
 		
 		extraPane.getChildren().add(changePassBox);
 		extraPane.getChildren().add(back);
-		
-		
-		
+
 		primaryStage.show();    
 	}
 

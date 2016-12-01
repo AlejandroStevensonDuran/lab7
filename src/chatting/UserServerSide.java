@@ -1,4 +1,5 @@
-package assignment7;
+// Slip day used
+package chatting;
 
 import java.net.Socket;
 import java.util.ArrayList;
@@ -9,10 +10,12 @@ public class UserServerSide {
 	Chat chat;
 	String password;
 	ArrayList<UserServerSide> friendList;
+	ClientObserver writer;
 	
-	public UserServerSide(String name, Socket socket){
+	public UserServerSide(String name, Socket socket, ClientObserver writer){
 		this.name=name;
 		this.socket=socket;
+		this.writer = writer;
 		// password
 		// friendList
 	}
