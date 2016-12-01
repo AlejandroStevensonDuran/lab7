@@ -79,11 +79,12 @@ public class Server{
 								// add friend to chat
 								message = reader.readLine();	// update message to next line
 								String friendName = message;
-								//TODO find if friends exists, if he does, then retrieve his socket
-								UserServerSide friend = clientListNames.get(friendName);
-								friend.setChat(user.chat); 
-								user.chat.addMember(friendName, new ClientObserver(friend.socket.getOutputStream()));		
-								user.chat.welcomeMessage();
+								if(clientListNames.containsKey(friendName)){
+									UserServerSide friend = clientListNames.get(friendName);
+									friend.setChat(user.chat); 
+									user.chat.addMember(friendName, new ClientObserver(friend.socket.getOutputStream()));		
+									user.chat.welcomeMessage();
+								}											
 							}							
 							
 						}
@@ -101,6 +102,7 @@ public class Server{
 						String chatName = reader.readLine();	// update message to next line
 						if (chatList.containsKey(chatName)){	// check if chat exists
 							user.setChat(chatList.get(chatName));	// change user's chat
+							chatList.get(chatName).addMember(user.name, new ClientObserver(user.socket.getOutputStream()));
 						}
 						else{
 							System.out.println("chat does not exist");
