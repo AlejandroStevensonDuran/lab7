@@ -372,7 +372,7 @@ public class Client extends Application {
 			public void handle(ActionEvent event) {
 				writer.println("changePass");
 				writer.flush();
-				writer.println(outgoing2.toString()); // send new password
+				writer.println(outgoing2.getText()); // send new password
 				writer.flush();
 			}
 		});
