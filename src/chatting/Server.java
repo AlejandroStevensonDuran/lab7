@@ -18,8 +18,7 @@ public class Server{
 
 	List<Socket> clientList = new ArrayList<Socket>();	
 	HashMap<String, Chat> chatList = new HashMap<String, Chat>();
-	ArrayList<String> clientListNames = new ArrayList<String>();
-	HashMap clientListMap = new HashMap();
+	HashMap<String, UserServerSide> clientListNames = new HashMap<String, UserServerSide>();
 	
 	public static void main(String[] args) {
 		try {
@@ -104,6 +103,49 @@ public class Server{
 							System.out.println("chat does not exist");
 						}						
 					}
+					
+					else if (message.equals("newUser")){
+						String userName = reader.readLine();	// update message to next line
+						if(clientListNames.containsKey(userName)){
+							System.out.println("user name taken");
+						}
+						else{
+							clientListNames.put(userName, user);	// add user to list
+							String password= reader.readLine();	// update message to next line
+							user.password = password; 
+						}
+					}
+			
+					else if (message.equals("login")){
+						System.out.println("login attempt server");
+						String userName = reader.readLine();	// update message to next line
+						if(clientListNames.containsKey(userName)){
+							user = clientListNames.get(userName);	// user found
+							String password= reader.readLine();	// update message to next line
+							writer.println("loginResponse");
+							writer.flush();
+							System.out.println(user.password);
+							System.out.println("input password " +password);
+							if (user.password.equals(password)){ // check password
+								writer.println("loginSuccess");
+								writer.flush();
+								System.out.println("here1");
+							}
+							else{
+								writer.println("loginFailed");
+								writer.flush();
+								System.out.println("here2");
+							}
+						}
+						else{
+							System.out.println("yoooo");
+							writer.println("loginResponse");
+							writer.flush();
+							writer.println("loginFailed");
+							writer.flush();
+						}
+					}
+					
 					
 
 //					System.out.println("server read "+message);

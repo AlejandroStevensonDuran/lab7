@@ -80,7 +80,8 @@ public class Client extends Application {
 	static String pw = "password";
 	static String checkUser;
 	static String checkPw;
-
+	String response="X";
+	Object lock = new Object();
 
 	public static void main(String[] args) {
 		launch(args);
@@ -94,10 +95,7 @@ public class Client extends Application {
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-		if (connected == false){	// set connection - one time 
-			setUpNetworking();
-			connected = true;
-		}
+		
 
 		primaryStage.setTitle("Login page");
 
@@ -107,21 +105,44 @@ public class Client extends Application {
 		HBox hb = new HBox();
 		hb.setPadding(new Insets(20,20,20,30));
 
-
-
 		GridPane gridPane = new GridPane();
 		gridPane.setPadding(new Insets(40,40,40,40));
 		gridPane.setHgap(5);
 		gridPane.setVgap(5);
-
-
 
 		Label lblUserName = new Label("Username");
 		final TextField txtUserName = new TextField();
 		Label lblPassword = new Label("Password");
 		final PasswordField pf = new PasswordField();
 		Button btnLogin = new Button("Login");
+		Button newUserBtn = new Button("New User?");
 		final Label lblMessage = new Label();
+		btnLogin.setDisable(true);   // disable buttons until connected to server
+		newUserBtn.setDisable(true);
+		final TextField serverName = new TextField("localhost");
+		serverName.setPromptText("Enter server name");
+		Button connectSrvBtn = new Button("Connect");
+		connectSrvBtn.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				String input = serverName.getText(); 
+				try {
+					setUpNetworking(input);
+					btnLogin.setDisable(false);
+					newUserBtn.setDisable(false);
+
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					System.out.println("invalid server");
+				}
+			}
+		});
+		
+
+		
+
+		HBox connectBox= new HBox();
+		connectBox.getChildren().addAll(serverName, connectSrvBtn);
 
 
 		gridPane.add(lblUserName, 0, 0);
@@ -129,7 +150,9 @@ public class Client extends Application {
 		gridPane.add(lblPassword, 0, 1);
 		gridPane.add(pf, 1, 1);
 		gridPane.add(btnLogin, 2, 1);
+		gridPane.add(newUserBtn, 2, 0);
 		gridPane.add(lblMessage, 1, 2, 2, 1);
+		gridPane.add(connectBox, 1, 9, 5, 1);
 
 
 		Text text = new Text("Hola!");
@@ -206,6 +229,7 @@ public class Client extends Application {
 				writer.println(outgoing.getText());
 				writer.flush();
 				writer.println("endMsg");
+				writer.flush();
 				outgoing.setText("");
 				outgoing.requestFocus();
 				statusBar.setText("Message sent successfully");
@@ -253,13 +277,27 @@ public class Client extends Application {
 		Scene menuScene = new Scene(paneForTextField, 600, 600);
 
 		btnLogin.setOnAction(new EventHandler() {
-
-			public void handle(ActionEvent event) {
-				checkUser = txtUserName.getText().toString();
-				checkPw = pf.getText().toString();
-				if(checkUser.equals(user) && checkPw.equals(pw)){
-					lblMessage.setText("Correct credentials");
-					lblMessage.setTextFill(Color.GREEN);
+			public void handle(ActionEvent event) throws IOException {
+				String userName = txtUserName.getText();
+				String userPass = pf.getText().toString();
+				writer.println("login");	// command login
+				writer.flush();
+				writer.println(userName);	// send user name
+				writer.flush();
+				writer.println(userPass);	// send password
+				writer.flush();
+				//while(response.equals("X")){};
+				
+					
+					while (true) {
+						if(!response.equals("X")){
+							System.out.println("seconddd");
+							break;
+						}
+					}
+				
+				System.out.println("yayy");
+				if(response.equals("loginSuccess")){					
 					primaryStage.setScene(menuScene);
 					primaryStage.setTitle("Hola!");
 				}
@@ -275,7 +313,27 @@ public class Client extends Application {
 			@Override
 			public void handle(Event event) {
 				ActionEvent Aevent = (ActionEvent)event;
-				handle(Aevent);
+				try {
+					handle(Aevent);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		});
+		
+		newUserBtn.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				primaryStage.setScene(menuScene);
+				String userName = txtUserName.getText();
+				String userPass = pf.getText().toString();
+				writer.println("newUser");
+				writer.flush();
+				writer.println(userName);
+				writer.flush();
+				writer.println(userPass);
+				writer.flush();
 			}
 		});
 		
@@ -283,13 +341,13 @@ public class Client extends Application {
 	}
 
 	public void run()throws Exception{
-		setUpNetworking();
 	}
 
-	private void setUpNetworking() throws Exception{
-
+	private void setUpNetworking(String serverName) throws Exception{
 		@SuppressWarnings("resource")
-		Socket sock = new Socket("127.0.0.1", 4242);
+		InetAddress address = InetAddress.getByName(serverName); 
+		Socket sock = new Socket(address.getHostAddress(), 4242);
+		//Socket sock = new Socket("127.0.0.1", 4242);
 		InputStreamReader streamReader = new InputStreamReader(sock.getInputStream());
 		reader = new BufferedReader(streamReader);
 		writer = new PrintWriter(sock.getOutputStream());
@@ -302,14 +360,21 @@ public class Client extends Application {
 	class IncomingReader implements Runnable {
 		public void run() {
 			String message;
-			try {
-				while ((message = reader.readLine()) != null) {
-					//					incoming.setText("");
-					incoming.appendText(message + "\n");	
+			
+				try {
+					while ((message = reader.readLine()) != null) {
+						if (message.equals("loginResponse")){
+							response = reader.readLine();
+						}
+						else{
+							incoming.appendText(message + "\n");
+						}
+					}
+				} catch (IOException ex) {
+					ex.printStackTrace();
 				}
-			} catch (IOException ex) {
-				ex.printStackTrace();
-			}
+				
+			
 		}
 	}
 
