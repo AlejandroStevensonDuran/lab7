@@ -217,7 +217,20 @@ public class Client extends Application {
 
 		HBox newChatBox= new HBox();
 		newChatBox.getChildren().addAll(newChatName,friendName,newChatBtn);
+		
+		// leave chat
+		Button leaveChatBtn = new Button("Leave Chat");
+		leaveChatBtn.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				writer.println("leaveChat");
+				writer.flush();
+				statusBar.setText("You have left the chat");
+				incoming.setText("");	// clear chat history
+			}
+		});
 
+		
 		//Send Message Button
 		Button sendMsgBtn = new Button("Send Message");
 		sendMsgBtn.setOnAction(new EventHandler<ActionEvent>() {
@@ -266,13 +279,16 @@ public class Client extends Application {
 					}
 				});
 
-		//
+		
+		HBox lowerBox = new HBox();
+		lowerBox.getChildren().addAll(clearHisBtn,leaveChatBtn);
+		
 		paneForTextField.getChildren().add(incoming);
 		paneForTextField.getChildren().add(sendMsgBox);
 		paneForTextField.getChildren().add(newChatBox);
 		paneForTextField.getChildren().add(joinChatBox);
 		paneForTextField.getChildren().add(statusBar);
-		paneForTextField.getChildren().add(clearHisBtn);
+		paneForTextField.getChildren().add(lowerBox);
 		Scene menuScene = new Scene(paneForTextField, 600, 600);
 
 		btnLogin.setOnAction(new EventHandler() {

@@ -109,6 +109,10 @@ public class Server{
 						}						
 					}
 					
+					else if (message.equals("leaveChat")){
+						user.chat.removeMember(user.name, new ClientObserver(user.socket.getOutputStream()));
+					}
+					
 					else if (message.equals("newUser")){
 						String userName = reader.readLine();	// update message to next line
 						if(clientListNames.containsKey(userName)){
