@@ -81,6 +81,7 @@ public class Server{
 								String friendName = message;
 								//TODO find if friends exists, if he does, then retrieve his socket
 								UserServerSide friend = clientListNames.get(friendName);
+								friend.setChat(user.chat); 
 								user.chat.addMember(friendName, new ClientObserver(friend.socket.getOutputStream()));		
 								user.chat.welcomeMessage();
 							}							
