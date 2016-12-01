@@ -1,4 +1,4 @@
-package chatting;
+package assignment7;
 
 import java.io.*; 
 import java.net.*;
@@ -76,8 +76,6 @@ public class Client extends Application {
 	String name="user1";
 	boolean connected=false;
 	int Width = 200;
-	static String user = "Client1";
-	static String pw = "password";
 	static String checkUser;
 	static String checkPw;
 	String response="X";
@@ -177,6 +175,7 @@ public class Client extends Application {
 		outgoing.setPromptText("Enter chat stuff");
 		incoming.setPromptText("chat history");
 		incoming.setPrefSize(Width, 200);
+		incoming.setEditable(false);
 		newChatName.setPromptText("Enter new chat name");
 		joinChatName.setPromptText("Enter chat name to join ");
 		friendName.setPromptText("Enter friend's name ");
@@ -287,15 +286,15 @@ public class Client extends Application {
 				writer.println(userPass);	// send password
 				writer.flush();
 				//while(response.equals("X")){};
-				
-					
-					while (true) {
-						if(!response.equals("X")){
-							System.out.println("seconddd");
-							break;
-						}
+
+
+				while (true) {
+					if(!response.equals("X")){
+						System.out.println("seconddd");
+						break;
 					}
-				
+				}
+
 				System.out.println("yayy");
 				if(response.equals("loginSuccess")){					
 					primaryStage.setScene(menuScene);
@@ -344,8 +343,8 @@ public class Client extends Application {
 	}
 
 	private void setUpNetworking(String serverName) throws Exception{
-		@SuppressWarnings("resource")
-		InetAddress address = InetAddress.getByName(serverName); 
+		//@SuppressWarnings("resource")
+		InetAddress address = InetAddress.getByName(serverName);
 		Socket sock = new Socket(address.getHostAddress(), 4242);
 		//Socket sock = new Socket("127.0.0.1", 4242);
 		InputStreamReader streamReader = new InputStreamReader(sock.getInputStream());

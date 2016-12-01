@@ -1,4 +1,4 @@
-package chatting;
+package assignment7;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -6,7 +6,8 @@ import java.io.InputStreamReader;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Observable;
-import chatting.Server.ClientHandler;
+
+import assignment7.Server.ClientHandler;
 import javafx.scene.control.TextField;
 
 public class Chat extends Observable{
@@ -50,23 +51,5 @@ public class Chat extends Observable{
 	public void sendUserNames(){	//sends user names of people in chat to all participants. invoked when user added/removed
 		
 	}
-	
-//	class ClientHandler implements Runnable {
-//
-//		public void run() {
-//			String message;
-//			try {
-//				while ((message = reader.readLine()) != null) {
-//					System.out.println("chat server read "+message);
-//					writer.println("got your message budy");
-//					writer.flush();
-//					//setChanged();
-//					//notifyObservers(message);
-//				}
-//			} catch (IOException e) {
-//				e.printStackTrace();
-//			}
-//		}
-//	}
-	
+		
 }
