@@ -1,5 +1,5 @@
 // Slip day used
-package chatting;
+package assignment7;
 
 import java.io.*; 
 import java.net.*;

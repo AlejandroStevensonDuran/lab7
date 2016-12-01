@@ -1,5 +1,5 @@
 // Slip day used
-package chatting;
+package assignment7;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -8,7 +8,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Observable;
 
-import chatting.Server.ClientHandler;
+import assignment7.Server.ClientHandler;
 import javafx.scene.control.TextField;
 
 public class Chat extends Observable{

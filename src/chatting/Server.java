@@ -1,5 +1,5 @@
 // Slip day used
-package chatting;
+package assignment7;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -83,7 +83,7 @@ public class Server{
 								if(clientListNames.containsKey(friendName)){
 									UserServerSide friend = clientListNames.get(friendName);
 									friend.setChat(user.chat); 
-									user.chat.addMember(friendName, new ClientObserver(friend.socket.getOutputStream()));		
+									user.chat.addMember(friendName, friend.writer);		
 									user.chat.welcomeMessage();
 								}											
 							}							
@@ -103,7 +103,7 @@ public class Server{
 						String chatName = reader.readLine();	// update message to next line
 						if (chatList.containsKey(chatName)){	// check if chat exists
 							user.setChat(chatList.get(chatName));	// change user's chat
-							chatList.get(chatName).addMember(user.name, new ClientObserver(user.socket.getOutputStream()));
+							chatList.get(chatName).addMember(user.name, writer);
 						}
 						else{
 							System.out.println("chat does not exist");
