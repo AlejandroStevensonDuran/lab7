@@ -82,7 +82,7 @@ public class Server{
 								if(clientListNames.containsKey(friendName)){
 									UserServerSide friend = clientListNames.get(friendName);
 									friend.setChat(user.chat); 
-									user.chat.addMember(friendName, writer);		
+									user.chat.addMember(friendName, new ClientObserver(friend.socket.getOutputStream()));		
 									user.chat.welcomeMessage();
 								}											
 							}							
