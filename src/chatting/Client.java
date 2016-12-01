@@ -102,6 +102,8 @@ public class Client extends Application {
 
 		HBox hb = new HBox();
 		hb.setPadding(new Insets(20,20,20,30));
+		
+		FlowPane extraPane = new FlowPane();  // used for extra scene
 
 		GridPane gridPane = new GridPane();
 		gridPane.setPadding(new Insets(40,40,40,40));
@@ -169,6 +171,7 @@ public class Client extends Application {
 		primaryStage.setScene(Loginscene);
 
 
+		Scene extraScene = new Scene(extraPane, 600, 600);
 
 
 		//set preferences for textboxes
@@ -250,6 +253,15 @@ public class Client extends Application {
 		HBox sendMsgBox = new HBox();
 		sendMsgBox.getChildren().addAll(outgoing,sendMsgBtn);
 
+		//extra button will include password change and friend list
+		Button extra = new Button("Extra");
+		extra.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				primaryStage.setScene(extraScene);
+			}
+		});		
+		
 		//Join Chat Button and text
 		Button joinChatBtn = new Button("Join Chat");
 		joinChatBtn.setOnAction(new EventHandler<ActionEvent>() {
@@ -289,6 +301,7 @@ public class Client extends Application {
 		paneForTextField.getChildren().add(joinChatBox);
 		paneForTextField.getChildren().add(statusBar);
 		paneForTextField.getChildren().add(lowerBox);
+		paneForTextField.getChildren().add(extra);
 		Scene menuScene = new Scene(paneForTextField, 600, 600);
 
 		btnLogin.setOnAction(new EventHandler() {
@@ -351,6 +364,32 @@ public class Client extends Application {
 				writer.flush();
 			}
 		});
+		
+		Button changePassBtn = new Button("Change Password");
+		changePassBtn.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				writer.println("changePass");
+				writer.flush();
+				writer.println(outgoing2.toString()); // send new password
+				writer.flush();
+			}
+		});
+		HBox changePassBox = new HBox();
+		changePassBox.getChildren().addAll(outgoing2,changePassBtn);
+		
+		Button back = new Button("Back");
+		back.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				primaryStage.setScene(menuScene);
+			}
+		});
+		
+		extraPane.getChildren().add(changePassBox);
+		extraPane.getChildren().add(back);
+		
+		
 		
 		primaryStage.show();    
 	}
