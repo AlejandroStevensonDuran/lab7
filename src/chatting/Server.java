@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.file.attribute.UserPrincipalLookupService;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -78,8 +79,9 @@ public class Server{
 								// add friend to chat
 								message = reader.readLine();	// update message to next line
 								String friendName = message;
-								//TODO find if friends exists, if he does, then retrieve his socket 
-								user.chat.addMember(friendName, writer);		
+								//TODO find if friends exists, if he does, then retrieve his socket
+								UserServerSide friend = clientListNames.get(friendName);
+								user.chat.addMember(friendName, new ClientObserver(friend.socket.getOutputStream()));		
 								user.chat.welcomeMessage();
 							}							
 							
@@ -110,6 +112,7 @@ public class Server{
 							System.out.println("user name taken");
 						}
 						else{
+							user.name = userName;
 							clientListNames.put(userName, user);	// add user to list
 							String password= reader.readLine();	// update message to next line
 							user.password = password; 
