@@ -115,7 +115,7 @@ public class Server{
 					
 					else if (message.equals("changePass")){
 						String newPass = reader.readLine();	// update message to next line
-						//System.out.println(newPass);
+						System.out.println("new password!!" + newPass);
 						user.password = newPass;		
 					}
 					
