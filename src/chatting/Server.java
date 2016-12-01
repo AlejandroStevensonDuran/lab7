@@ -82,7 +82,7 @@ public class Server{
 								if(clientListNames.containsKey(friendName)){
 									UserServerSide friend = clientListNames.get(friendName);
 									friend.setChat(user.chat); 
-									user.chat.addMember(friendName, new ClientObserver(friend.socket.getOutputStream()));		
+									user.chat.addMember(friendName, writer);		
 									user.chat.welcomeMessage();
 								}											
 							}							
@@ -110,7 +110,11 @@ public class Server{
 					}
 					
 					else if (message.equals("leaveChat")){
-						user.chat.removeMember(user.name, new ClientObserver(user.socket.getOutputStream()));
+						if (user.chat!=null){
+							System.out.println("gets here");
+							user.chat.removeMember(user.name, writer);
+							user.chat = null;
+						}
 					}
 					
 					else if (message.equals("changePass")){
