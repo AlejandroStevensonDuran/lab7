@@ -74,7 +74,6 @@ public class Client extends Application {
 	TextField joinChatName = new TextField();
 	TextField friendName = new TextField();
 	TextField statusBar = new TextField();
-	ArrayList<Chat> chatList = new ArrayList<Chat>();
 	String name="user1";
 	boolean connected=false;
 	int Width = 200;
