@@ -68,6 +68,7 @@ public class Client extends Application {
 	PrintWriter writer;
 	TextArea incoming = new TextArea();
 	TextField outgoing = new TextField();
+	TextField outgoing2 = new TextField();
 	TextField newChatName = new TextField();
 	TextField joinChatName = new TextField();
 	TextField friendName = new TextField();
