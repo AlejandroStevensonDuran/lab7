@@ -32,7 +32,7 @@ public class Chat extends Observable{
 	}
 	
 	public synchronized void removeMember(String member, ClientObserver writer) throws IOException{
-		//TODO remove member
+		this.deleteObserver(writer);
 		System.out.println("removed: " + member);
 	}
 	
