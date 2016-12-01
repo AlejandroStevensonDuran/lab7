@@ -65,7 +65,7 @@ public class Server{
 				while (reader!=null && (message = reader.readLine()) != null) {
 					if (message.equals("createChat")){
 						if (!(message = reader.readLine()).equals("")){	// update message to next line
-							Chat newChat = new Chat(reader, writer, message);
+							Chat newChat = new Chat(message);
 							if(chatList.containsKey(message)){
 								System.out.println("chat already exists");
 							}
@@ -75,12 +75,12 @@ public class Server{
 								System.out.println("created a chat");
 								// now add creator to chat
 								message = reader.readLine();	// update message to next line
-								user.chat.addMember(message, new Socket());								
+								user.chat.addMember(message, writer);								
 								// add friend to chat
 								message = reader.readLine();	// update message to next line
 								String friendName = message;
 								//TODO find if friends exists, if he does, then retrieve his socket 
-								user.chat.addMember(friendName, new Socket());		
+								user.chat.addMember(friendName, writer);		
 								user.chat.welcomeMessage();
 							}							
 							
@@ -91,13 +91,18 @@ public class Server{
 						
 					}
 					else if (message.equals("sendMsg")){
+						message = reader.readLine();	// update message to next line
 						if (user.chat != null)
-							user.chat.sendMessage(user);
+							user.chat.sendMessage(user,message);
 					}
 					else if (message.equals("joinChat")){
-						message = reader.readLine();	// update message to next line
-						//TODO 
-						
+						String chatName = reader.readLine();	// update message to next line
+						if (chatList.containsKey(chatName)){	// check if chat exists
+							user.setChat(chatList.get(chatName));	// change user's chat
+						}
+						else{
+							System.out.println("chat does not exist");
+						}						
 					}
 					
 

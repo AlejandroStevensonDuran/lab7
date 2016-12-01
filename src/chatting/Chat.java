@@ -12,8 +12,6 @@ import javafx.scene.control.TextField;
 public class Chat extends Observable{
 	ArrayList<String> members = new ArrayList<String>();
 	ArrayList<String> history = new ArrayList<String>();	//chat history
-	BufferedReader reader;
-	ClientObserver writer;
 	String chatName;
 	
 	@Override
@@ -21,25 +19,20 @@ public class Chat extends Observable{
 		return chatName;
 	}
 	
-	public Chat(BufferedReader reader, ClientObserver writer, String name) {
-		//Thread t = new Thread(new ClientHandler(reader, writer));
-		//t.start();
-		this.reader = reader;
-		this.writer = writer;
+	public Chat(String name) {
 		chatName = name;
 		System.out.println("Created new chat instance named:" + chatName);
 	}
 	
-	public synchronized void addMember(String newMember, Socket clientSocket) throws IOException{
+	public synchronized void addMember(String newMember, ClientObserver writer) throws IOException{
 		members.add(newMember);
 		this.addObserver(writer);		
 		System.out.println("added: " + newMember);
 	}
 	
-	public synchronized void removeMember(String newMember, Socket clientSocket) throws IOException{
-		members.add(newMember);
-		this.addObserver(writer);		
-		System.out.println("added: " + newMember);
+	public synchronized void removeMember(String member, ClientObserver writer) throws IOException{
+		//TODO remove member
+		System.out.println("removed: " + member);
 	}
 	
 	public synchronized void welcomeMessage(){
@@ -47,17 +40,11 @@ public class Chat extends Observable{
 		notifyObservers("Welcome to chat "+ chatName + "!");
 	}
 	
-	public synchronized void sendMessage(UserServerSide user){
-		String message;
-		try {
-			while ((message = reader.readLine()) != null && !message.equals("endMsg")) {
-				System.out.println("recieved Message: "+message + "from" + user.toString());
-				setChanged();
-				notifyObservers(user.toString() + ": " + message);
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+	public synchronized void sendMessage(UserServerSide user, String message){
+		System.out.println("recieved Message: "+message + "from" + user.toString());
+		setChanged();
+		notifyObservers(user.toString() + ": " + message);
+		history.add(user.toString() + ": " + message);	// add message to history
 	}
 	
 	public void sendUserNames(){	//sends user names of people in chat to all participants. invoked when user added/removed
